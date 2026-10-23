@@ -114,11 +114,13 @@ function loadProfile() {
   try {
     const profile = JSON.parse(data);
 
-    document.getElementById("userName").value = profile.name || "";
+    const nameInput = document.getElementById("userName");
+    const mobileInput = document.getElementById("userMobile");
+    const emailInput = document.getElementById("userEmail");
 
-    document.getElementById("userMobile").value = profile.mobile || "";
-
-    document.getElementById("userEmail").value = profile.email || "";
+    if (nameInput) nameInput.value = profile.name || "";
+    if (mobileInput) mobileInput.value = profile.mobile || "";
+    if (emailInput) emailInput.value = profile.email || "";
 
     displayProfile(profile);
   } catch (error) {
@@ -128,6 +130,8 @@ function loadProfile() {
 
 function displayProfile(profile) {
   const display = document.getElementById("profileDisplay");
+
+  if (!display) return;
 
   display.innerHTML = `
         <strong>${escapeHTML(profile.name)}</strong><br>
@@ -171,13 +175,13 @@ function loadVehicle() {
 
   try {
     const vehicle = JSON.parse(data);
+    const vehicleNumber = document.getElementById("vehicleNumber");
+    const vehicleModel = document.getElementById("vehicleModel");
+    const driverName = document.getElementById("driverName");
 
-    document.getElementById("vehicleNumber").value =
-      vehicle.vehicleNumber || "";
-
-    document.getElementById("vehicleModel").value = vehicle.vehicleModel || "";
-
-    document.getElementById("driverName").value = vehicle.driverName || "";
+    if (vehicleNumber) vehicleNumber.value = vehicle.vehicleNumber || "";
+    if (vehicleModel) vehicleModel.value = vehicle.vehicleModel || "";
+    if (driverName) driverName.value = vehicle.driverName || "";
   } catch (error) {
     console.error("Vehicle loading error:", error);
   }
@@ -255,21 +259,26 @@ function updateLocationUI() {
 
   const accuracy = Math.round(currentLocation.accuracy);
 
-  document.getElementById("latitude").textContent = lat;
-  document.getElementById("longitude").textContent = lng;
-  document.getElementById("accuracy").textContent = accuracy + " m";
+  const values = {
+    latitude: lat,
+    longitude: lng,
+    accuracy: accuracy + " m",
+    mapLat: lat,
+    mapLng: lng,
+    mapAccuracy: accuracy + " m",
+    locationState: "ACTIVE",
+  };
 
-  document.getElementById("mapLat").textContent = lat;
-  document.getElementById("mapLng").textContent = lng;
-  document.getElementById("mapAccuracy").textContent = accuracy + " m";
-
-  document.getElementById("locationState").textContent = "ACTIVE";
+  Object.entries(values).forEach(([id, value]) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  });
 
   updateLocationStatus("FOUND ✓");
 
   const placeholder = document.getElementById("mapPlaceholder");
 
-  placeholder.innerHTML = `
+  if (placeholder) placeholder.innerHTML = `
         <div class="map-pin">📍</div>
         <h3>GPS Location Found</h3>
         <p>
@@ -284,10 +293,11 @@ function updateLocationUI() {
 }
 
 function updateLocationStatus(status) {
-  document.getElementById("locationBadge").textContent = status;
+  const badge = document.getElementById("locationBadge");
+  if (badge) badge.textContent = status;
 
-  document.getElementById("locationMessage").textContent =
-    "Location Status: " + status;
+  const message = document.getElementById("locationMessage");
+  if (message) message.textContent = "Location Status: " + status;
 }
 
 function openMap() {
@@ -330,15 +340,16 @@ function startSOS(type) {
   pendingEmergencyType = type;
 
   const modal = document.getElementById("countdownModal");
-
   const title = document.getElementById("countdownTitle");
 
-  title.textContent =
-    type === "Vehicle Emergency"
-      ? "VEHICLE EMERGENCY DETECTED"
-      : "SOS ACTIVATING...";
+  if (title) {
+    title.textContent =
+      type === "Vehicle Emergency"
+        ? "VEHICLE EMERGENCY DETECTED"
+        : "SOS ACTIVATING...";
+  }
 
-  modal.classList.remove("hidden");
+  if (modal) modal.classList.remove("hidden");
 }
 
 /* =========================================
@@ -354,7 +365,8 @@ function activateNow() {
 ========================================= */
 
 function cancelSOS() {
-  document.getElementById("countdownModal").classList.add("hidden");
+  const modal = document.getElementById("countdownModal");
+  if (modal) modal.classList.add("hidden");
 
   saveEmergencyHistory(pendingEmergencyType, "Cancelled");
 
@@ -368,7 +380,8 @@ function cancelSOS() {
 ========================================= */
 
 function activateEmergency() {
-  document.getElementById("countdownModal").classList.add("hidden");
+  const modal = document.getElementById("countdownModal");
+  if (modal) modal.classList.add("hidden");
 
   emergencyActive = true;
 
@@ -396,7 +409,7 @@ function activateEmergency() {
 
       () => {
         showToast(
-          "Real GPS unavailable. You can use Demo Emergency mode.",
+          "Real GPS unavailable. The emergency message will not include your location.",
           "error",
         );
 
@@ -421,11 +434,13 @@ function activateEmergency() {
 function finishEmergencyActivation() {
   const message = generateEmergencyMessage();
 
-  document.getElementById("emergencyMessage").value = message;
+  const messageField = document.getElementById("emergencyMessage");
+  if (messageField) messageField.value = message;
 
-  document.getElementById("emergencyType").textContent = pendingEmergencyType;
+  const typeLabel = document.getElementById("emergencyType");
+  if (typeLabel) typeLabel.textContent = pendingEmergencyType;
 
-  // Shared with the Medical Response page (browser demo storage).
+  // Keep the current alert available to other pages in this browser.
   localStorage.setItem("safeguardActiveEmergency", JSON.stringify({
     type: pendingEmergencyType,
     activatedAt: new Date().toISOString(),
@@ -438,15 +453,15 @@ function finishEmergencyActivation() {
     status: "ACTIVE"
   }));
 
-  document.getElementById("emergencyResult").classList.remove("hidden");
+  const result = document.getElementById("emergencyResult");
+  if (result) {
+    result.classList.remove("hidden");
+    result.scrollIntoView({ behavior: "smooth" });
+  }
 
   saveEmergencyHistory(pendingEmergencyType, "Activated");
 
   updateDashboard();
-
-  document.getElementById("emergencyResult").scrollIntoView({
-    behavior: "smooth",
-  });
 
   showToast("SOS is now ACTIVE.", "error");
 }
@@ -680,6 +695,8 @@ function loadContacts() {
 
   const container = document.getElementById("contactsList");
 
+  if (!container) return;
+
   container.innerHTML = "";
 
   if (contacts.length === 0) {
@@ -845,13 +862,16 @@ function updateDashboard() {
 
   const history = getHistory();
 
-  document.getElementById("contactCount").textContent = contacts.length;
+  const contactCount = document.getElementById("contactCount");
+  if (contactCount) contactCount.textContent = contacts.length;
 
-  document.getElementById("eventCount").textContent = history.length;
+  const eventCount = document.getElementById("eventCount");
+  if (eventCount) eventCount.textContent = history.length;
 
-  document.getElementById("statusText").textContent = emergencyActive
-    ? "EMERGENCY"
-    : "SAFE";
+  const status = document.getElementById("statusText");
+  if (status) {
+    status.textContent = emergencyActive ? "EMERGENCY" : "SAFE";
+  }
 }
 
 /* =========================================
@@ -859,9 +879,11 @@ function updateDashboard() {
 ========================================= */
 
 function updateEmergencyStatus() {
-  document.getElementById("statusText").textContent = "EMERGENCY";
+  const status = document.getElementById("statusText");
+  if (!status) return;
 
-  document.getElementById("statusText").style.color = "#ff4757";
+  status.textContent = "EMERGENCY";
+  status.style.color = "#ff4757";
 }
 
 function resolveEmergency() {
@@ -876,13 +898,16 @@ function resolveEmergency() {
     } catch (error) { console.error("Could not update emergency record:", error); }
   }
 
-  document.getElementById("statusText").textContent = "SAFE";
-
-  document.getElementById("statusText").style.color = "";
+  const status = document.getElementById("statusText");
+  if (status) {
+    status.textContent = "SAFE";
+    status.style.color = "";
+  }
 
   saveEmergencyHistory(pendingEmergencyType, "Resolved");
 
-  document.getElementById("emergencyResult").classList.add("hidden");
+  const result = document.getElementById("emergencyResult");
+  if (result) result.classList.add("hidden");
 
   updateDashboard();
 
@@ -900,7 +925,8 @@ function demoEmergency() {
 
   emergencyActive = true;
 
-  document.getElementById("emergencyType").textContent = "Demo Emergency";
+  const typeLabel = document.getElementById("emergencyType");
+  if (typeLabel) typeLabel.textContent = "Demo Emergency";
 
   localStorage.setItem("safeguardActiveEmergency", JSON.stringify({
     type: "Demo Emergency",
@@ -914,18 +940,18 @@ function demoEmergency() {
     status: "ACTIVE"
   }));
 
-  document.getElementById("emergencyMessage").value =
-    generateEmergencyMessage();
+  const messageField = document.getElementById("emergencyMessage");
+  if (messageField) messageField.value = generateEmergencyMessage();
 
-  document.getElementById("emergencyResult").classList.remove("hidden");
+  const result = document.getElementById("emergencyResult");
+  if (result) {
+    result.classList.remove("hidden");
+    result.scrollIntoView({ behavior: "smooth" });
+  }
 
   saveEmergencyHistory("Demo Emergency", "Activated");
 
   updateDashboard();
-
-  document.getElementById("emergencyResult").scrollIntoView({
-    behavior: "smooth",
-  });
 
   showToast(
     "Demo emergency activated. DEMO LOCATION is being used.",
@@ -957,6 +983,7 @@ document.addEventListener("keydown", (event) => {
 
   if (
     event.key === "Escape" &&
+    document.getElementById("countdownModal") &&
     !document.getElementById("countdownModal").classList.contains("hidden")
   ) {
     cancelSOS();

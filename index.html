@@ -45,11 +45,10 @@
       <nav id="navMenu">
         <a href="#home">Home</a>
         <a href="#dashboard">Dashboard</a>
-        <a href="#people">People SOS</a>
-        <a href="#vehicle">Vehicle SOS</a>
+        <a href="people-safety.html">People Safety SOS</a>
+        <a href="vehicle-emergency.html">Vehicle Emergency SOS</a>
         <a href="#contacts">Contacts</a>
         <a href="#history">History</a>
-        <a href="medical-response.html">Medical Response</a>
       </nav>
 
       <button class="menu-btn" id="menuBtn">☰</button>
@@ -68,13 +67,10 @@
         </p>
 
         <div class="hero-buttons">
-          <button class="btn danger" onclick="startSOS('People Safety')">
-            🆘 PEOPLE SAFETY SOS
-          </button>
-
-          <button class="btn secondary" onclick="startSOS('Vehicle Emergency')">
+          <a class="btn danger" href="people-safety.html">🆘 PEOPLE SAFETY SOS</a>
+          <a class="btn secondary" href="vehicle-emergency.html">
             🚗 VEHICLE EMERGENCY SOS
-          </button>
+          </a>
         </div>
       </div>
 
@@ -191,94 +187,6 @@
       </div>
     </section>
 
-    <!-- ================= PEOPLE SOS ================= -->
-    <section id="people" class="section sos-section">
-      <div class="section-title">
-        <span>PERSONAL EMERGENCY</span>
-        <h2>People Safety SOS</h2>
-        <p>
-          If you are in danger, activate SOS to share your emergency location.
-        </p>
-      </div>
-
-      <div class="sos-container">
-        <div class="sos-info">
-          <div class="feature">
-            <span>📍</span>
-            <div>
-              <h3>GPS Location</h3>
-              <p>Capture your current location.</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <span>📱</span>
-            <div>
-              <h3>WhatsApp Alert</h3>
-              <p>Prepare an emergency message.</p>
-            </div>
-          </div>
-
-          <div class="feature">
-            <span>📧</span>
-            <div>
-              <h3>Email Alert</h3>
-              <p>Prepare an email emergency alert.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="sos-button-wrapper">
-          <div class="pulse-ring"></div>
-          <button class="big-sos" onclick="startSOS('People Safety')">
-            SOS
-          </button>
-          <p>PRESS FOR EMERGENCY</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= VEHICLE SOS ================= -->
-    <section id="vehicle" class="section vehicle-section">
-      <div class="section-title">
-        <span>VEHICLE SECURITY</span>
-        <h2>Vehicle Emergency SOS</h2>
-        <p>
-          Activate an emergency alert when a vehicle accident or emergency
-          occurs.
-        </p>
-      </div>
-
-      <div class="vehicle-grid">
-        <div class="card">
-          <div class="card-header">
-            <h3>🚗 Vehicle Information</h3>
-          </div>
-
-          <input id="vehicleNumber" type="text" placeholder="Vehicle Number" />
-          <input id="vehicleModel" type="text" placeholder="Vehicle Model" />
-          <input id="driverName" type="text" placeholder="Driver Name" />
-
-          <button class="btn primary full" onclick="saveVehicle()">
-            Save Vehicle
-          </button>
-        </div>
-
-        <div class="vehicle-sos-card">
-          <div class="vehicle-icon">🚨</div>
-          <h3>Vehicle Emergency</h3>
-          <p>Press the button to activate vehicle SOS.</p>
-
-          <button
-            class="vehicle-sos-btn"
-            onclick="startSOS('Vehicle Emergency')"
-          >
-            🚨 VEHICLE SOS
-          </button>
-        </div>
-      </div>
-    </section>
-
     <!-- ================= CONTACTS ================= -->
     <section id="contacts" class="section">
       <div class="section-title">
@@ -338,45 +246,6 @@
 
             <tbody id="historyTable"></tbody>
           </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= EMERGENCY RESULT ================= -->
-    <section id="emergencyResult" class="section emergency-result hidden">
-      <div class="emergency-active">
-        <div class="emergency-icon">🚨</div>
-
-        <h2>SOS ACTIVE</h2>
-
-        <p id="emergencyType">Emergency detected</p>
-
-        <div class="message-box">
-          <h3>Emergency Message</h3>
-          <textarea id="emergencyMessage" readonly></textarea>
-
-          <div class="button-row">
-            <button class="btn primary" onclick="copyMessage()">
-              📋 COPY MESSAGE
-            </button>
-
-            <button class="btn whatsapp" onclick="sendWhatsAppAlert()">
-              💬 SEND VIA WHATSAPP
-            </button>
-
-            <button class="btn email" onclick="sendEmailAlert()">
-              📧 SEND EMAIL ALERT
-            </button>
-          </div>
-        </div>
-
-        <div class="button-row response-actions">
-          <a class="btn primary medical-link" href="medical-response.html"
-            >🩺 DOCTOR & AMBULANCE DETAILS</a
-          >
-          <button class="btn resolve" onclick="resolveEmergency()">
-            ✓ RESOLVE EMERGENCY
-          </button>
         </div>
       </div>
     </section>
@@ -466,27 +335,6 @@
 
       <small>© 2026 SafeGuard SOS | College Project Demo</small>
     </footer>
-
-    <!-- ================= COUNTDOWN MODAL ================= -->
-    <div id="countdownModal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-icon">🚨</div>
-
-        <h2 id="countdownTitle">SOS ACTIVATING...</h2>
-
-        <p>
-          Tap ACTIVATE NOW to send the emergency alert, or CANCEL SOS to exit.
-        </p>
-
-        <div class="button-row center">
-          <button class="btn danger" onclick="activateNow()">
-            ACTIVATE NOW
-          </button>
-
-          <button class="btn outline" onclick="cancelSOS()">CANCEL SOS</button>
-        </div>
-      </div>
-    </div>
 
     <!-- ================= TOAST ================= -->
     <div id="toast" class="toast"></div>
